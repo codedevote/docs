@@ -44,13 +44,87 @@ If you are migrating from Azure Resource Manager templates, read our [Migrate Fr
 
 ## Example
 
+{{< chooser language "typescript,python,csharp,go" >}}
+
+{{% choosable language typescript %}}
+
 ```typescript
-import * as resources from "@pulumi/azure-native/resources";
+import * as resources from "@pulumi/azure-nextgen/resources/latest";
 
 const resourceGroup = new resources.ResourceGroup("resourceGroup", {
+  resourceGroupName: "my-rg",
   location: "WestUS",
 });
 ```
+
+{{% /choosable %}}
+
+{{% choosable language python %}}
+
+```python
+import pulumi_azure_nextgen as azure_nextgen
+
+resource_group = azure_nextgen.resources.latest.ResourceGroup("resourceGroup",
+                                                              resource_group_name="my-rg",
+                                                              location="WestUS")
+```
+
+{{% /choosable %}}
+
+{{% choosable language csharp %}}
+
+```csharp
+using Pulumi;
+using AzureNextGen = Pulumi.AzureNextGen;
+
+class MyStack : Stack
+{
+    public MyStack()
+    {
+        var resourceGroup = new AzureNextGen.Resources.Latest.ResourceGroup("resourceGroup", new AzureNextGen.Resources.Latest.ResourceGroupArgs
+        {
+            ResourceGroupName = "my-rg",
+            Location = "WestUS",
+        });
+    }
+
+}
+
+class Program
+{
+    static Task<int> Main(string[] args) => Deployment.RunAsync<MyStack>();
+}
+```
+
+{{% /choosable %}}
+
+{{% choosable language go %}}
+
+```go
+package main
+
+import (
+    resources "github.com/pulumi/pulumi-azure-nextgen/sdk/go/azure/resources/latest"
+    "github.com/pulumi/pulumi/sdk/v2/go/pulumi"
+)
+
+func main() {
+    pulumi.Run(func(ctx *pulumi.Context) error {
+        _, err := resources.NewResourceGroup(ctx, "resourceGroup", &resources.ResourceGroupArgs{
+            ResourceGroupName: pulumi.String("my-rg"),
+            Location:          pulumi.String("WestUS"),
+        })
+        if err != nil {
+            return err
+        }
+        return nil
+    })
+}
+```
+
+{{% /choosable %}}
+
+{{< /chooser >}}
 
 Above is one example of an Azure resource group using Pulumi. You can find additional examples in [the Pulumi examples repo](https://github.com/pulumi/examples).
 
@@ -69,17 +143,17 @@ The native Azure provider SDKs are open source and available in the [pulumi/pulu
 
 The native Azure provider accepts the following configuration settings. These can be provided via `pulumi config set azure-native:<option>`, or passed to the constructor of [Provider]({{< relref "/docs/reference/pkg/azure-native/provider" >}}) to construct a specific instance of the Azure provider.
 
-* `auxiliaryTenantIds`: (Optional)
-* `clientCertificatePassword`: (Optional) The password associated with the Client Certificate. For use when authenticating as a Service Principal using a Client Certificate.
-* `clientCertificatePath`: (Optional) The path to the Client Certificate associated with the Service Principal for use when authenticating as a Service Principal using a Client Certificate.
-* `clientId`: (Optional) The Client ID which should be used.
-* `clientSecret`: (Optional) The Client Secret which should be used. For use When authenticating as a Service Principal using a Client Secret.
-* `disablePulumiPartnerId`: (Optional) This will disable the Pulumi Partner ID which is used if a custom partnerId isn’t specified.
-* `environment`: (Optional) The Cloud Environment which should be used. Possible values are public, usgovernment, german, and china. Defaults to public.
-* `msiEndpoint`: (Optional) The path to a custom endpoint for Managed Service Identity - in most circumstances this should be detected automatically.
-* `partnerId`: (Optional) A GUID/UUID that is registered with Microsoft to facilitate partner resource usage attribution.
-* `subscriptionId`: (Optional) The Subscription ID which should be used.
-* `tenantId`: (Optional) The Tenant ID which should be used.
-* `useMsi`: (Optional) Allowed Managed Service Identity be used for Authentication.
+* `auxiliaryTenantIds`: (Optional) It can also be sourced from the following environment variable: ARM_AUXILIARY_TENANT_IDS
+* `clientCertificatePassword`: (Optional) The password associated with the Client Certificate. For use when authenticating as a Service Principal using a Client Certificate It can also be sourced from the following environment variable: ARM_CLIENT_CERTIFICATE_PASSWORD
+* `clientCertificatePath`: (Optional) The path to the Client Certificate associated with the Service Principal for use when authenticating as a Service Principal using a Client Certificate. It can also be sourced from the following environment variable: ARM_CLIENT_CERTIFICATE_PATH
+* `clientId`: (Optional) The Client ID which should be used. It can also be sourced from the following environment variable: ARM_CLIENT_ID
+* `clientSecret`: (Optional) The Client Secret which should be used. For use When authenticating as a Service Principal using a Client Secret. It can also be sourced from the following environment variable: ARM_CLIENT_SECRET
+* `disablePulumiPartnerId`: (Optional) This will disable the Pulumi Partner ID which is used if a custom partnerId isn’t specified. It can also be sourced from the following environment variable: ARM_DISABLE_PULUMI_PARTNER_ID
+* `environment`: (Optional) The Cloud Environment which should be used. Possible values are public, usgovernment, german, and china. Defaults to public. It can also be sourced from the following environment variable: ARM_ENVIRONMENT
+* `msiEndpoint`: (Optional) The path to a custom endpoint for Managed Service Identity - in most circumstances this should be detected automatically. It can also be sourced from the following environment variable: ARM_MSI_ENDPOINT
+* `partnerId`: (Optional) A GUID/UUID that is registered with Microsoft to facilitate partner resource usage attribution. It can also be sourced from the following environment variable: ARM_PARTNER_ID
+* `subscriptionId`: (Optional) The Subscription ID which should be used. It can also be sourced from the following environment variable: ARM_SUBSCRIPTION_ID
+* `tenantId`: (Optional) The Tenant ID which should be used. It can also be sourced from the following environment variable: ARM_TENANT_ID
+* `useMsi`: (Optional) Allowed Managed Service Identity be used for Authentication. It can also be sourced from the following environment variable: ARM_USE_MSI
 
 For Pulumi support and troubleshooting, click the links in the sidebar on the left of the page.
